@@ -1,0 +1,112 @@
+FROM fedora
+
+# Add docker-compose
+# Compose V2 as docker plugin
+RUN mkdir --parents /usr/local/lib/docker/cli-plugins && \
+  curl --location "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64" \
+  --silent --output /usr/local/lib/docker/cli-plugins/docker-compose && \
+  chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
+# C++ Based tools
+RUN dnf update --assumeyes && \
+  dnf groupinstall --assumeyes "Development Tools" "C Development Tools and Libraries" && \
+  dnf install --assumeyes \
+    clang \
+    clang-tools-extra \
+    clang-analyzer \
+    git-clang-format \
+    cmake \
+    ninja-build \
+    nasm \
+    bash \
+    ca-certificates \
+    curl \
+    wget \
+    vim \
+    tar \
+    nano \
+    dos2unix \
+    sudo \
+    git && \
+  dnf clean all
+
+# Make typing unicode characters in the terminal work.
+ENV LC_ALL=en_US.UTF-8 \
+    LANG=en_US.UTF-8
+
+# Create a user for development
+ARG USERNAME=coder
+ARG USER_UID=1000
+ARG USER_GID=${USER_UID}
+
+# Add a user `coder` so that you're not developing as the `root` user
+RUN useradd ${USERNAME} \
+  --create-home \
+  --shell=/bin/bash \
+  # --groups=docker \
+  --uid=${USER_UID} \
+  --user-group && \
+  echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers.d/nopasswd
+
+USER ${USERNAME}
+ENV USER=${USERNAME}
+WORKDIR /home/${USERNAME}
+
+# Add PowerShell
+COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=mcr.microsoft.com/powershell /opt/microsoft/powershell /usr/local/deps/powershell
+RUN mv /usr/local/deps/powershell/*/* /usr/local/deps/powershell/
+ENV PATH=/usr/local/deps/powershell:$PATH
+
+# Add Node
+COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=node:slim /usr/local /usr/local/deps/node
+ENV PATH=/usr/local/deps/node/bin:$PATH
+
+# Add Conda
+COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=continuumio/miniconda3 /opt/conda /opt/conda
+ENV PATH="/opt/conda/bin:${PATH}"
+
+# Add Java
+ENV JAVA_HOME /opt/java/openjdk
+ENV PATH ${JAVA_HOME}/bin:$PATH
+COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=eclipse-temurin /opt/java/openjdk ${JAVA_HOME}
+
+# Add .NET
+COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=mcr.microsoft.com/dotnet/sdk /usr/share/dotnet /usr/local/deps/dotnet
+ENV PATH=/usr/local/deps/dotnet:$PATH
+
+# Add Rust
+ENV RUSTUP_HOME=/usr/local/deps/rustup \
+  CARGO_HOME=/usr/local/deps/cargo
+COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=rust:slim /usr/local/rustup ${RUSTUP_HOME}
+COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=rust:slim /usr/local/cargo ${CARGO_HOME}
+ENV PATH=${CARGO_HOME}/bin:$PATH
+RUN rustup component add clippy rustfmt llvm-tools rust-analyzer
+
+###
+# Coder
+###
+ENV EXTENSIONS_GALLERY='{"serviceUrl":"https://marketplace.visualstudio.com/_apis/public/gallery","cacheUrl":"https://vscode.blob.core.windows.net/gallery/index","itemUrl":"https://marketplace.visualstudio.com/items","controlUrl":"","recommendationsUrl":""}'
+ENV PATH=${PATH}:/home/${USERNAME}/code-server/bin
+RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --prefix=/home/${USERNAME}/code-server --method=standalone && \
+  rm -rf ~/.cache
+# Install Extensions
+RUN code-server --install-extension ms-vscode.cpptools-extension-pack \
+  code-server --install-extension VisualStudioExptTeam.vscodeintellicode && \
+  code-server --install-extension vscjava.vscode-java-pack && \
+  code-server --install-extension vscjava.vscode-gradle && \
+  code-server --install-extension redhat.vscode-quarkus && \
+  code-server --install-extension ms-python.anaconda-extension-pack && \
+  code-server --install-extension ms-kubernetes-tools.vscode-kubernetes-tools && \
+  code-server --install-extension ms-azuretools.vscode-docker && \
+  code-server --install-extension ms-dotnettools.vscode-dotnet-pack && \
+  code-server --install-extension esbenp.prettier-vscode && \
+  code-server --install-extension rust-lang.rust-analyzer && \
+  code-server --install-extension eamodio.gitlens && \
+  code-server --install-extension ms-vscode.vs-keybindings
+
+# Path to Coder IDE
+WORKDIR /home/${USERNAME}/code
+
+EXPOSE 8080
+
+ENTRYPOINT ["code-server", "--bind-addr", "0.0.0.0:8080", "--disable-telemetry", "."]
