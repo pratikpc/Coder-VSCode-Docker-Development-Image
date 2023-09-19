@@ -113,6 +113,7 @@ RUN code-server --install-extension ms-vscode.cpptools-extension-pack \
    --install-extension ms-dotnettools.vscode-dotnet-pack  \
    --install-extension esbenp.prettier-vscode  \
    --install-extension rust-lang.rust-analyzer  \
+   --install-extension ms-vscode.hexeditor  \
    --install-extension eamodio.gitlens  \
    --install-extension ms-vscode.vs-keybindings
 
