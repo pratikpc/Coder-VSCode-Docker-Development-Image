@@ -91,18 +91,18 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --prefix=/home/${US
   rm -rf ~/.cache
 # Install Extensions
 RUN code-server --install-extension ms-vscode.cpptools-extension-pack \
-  code-server --install-extension VisualStudioExptTeam.vscodeintellicode && \
-  code-server --install-extension vscjava.vscode-java-pack && \
-  code-server --install-extension vscjava.vscode-gradle && \
-  code-server --install-extension redhat.vscode-quarkus && \
-  code-server --install-extension ms-python.anaconda-extension-pack && \
-  code-server --install-extension ms-kubernetes-tools.vscode-kubernetes-tools && \
-  code-server --install-extension ms-azuretools.vscode-docker && \
-  code-server --install-extension ms-dotnettools.vscode-dotnet-pack && \
-  code-server --install-extension esbenp.prettier-vscode && \
-  code-server --install-extension rust-lang.rust-analyzer && \
-  code-server --install-extension eamodio.gitlens && \
-  code-server --install-extension ms-vscode.vs-keybindings
+   --install-extension VisualStudioExptTeam.vscodeintellicode  \
+   --install-extension vscjava.vscode-java-pack  \
+   --install-extension vscjava.vscode-gradle  \
+   --install-extension redhat.vscode-quarkus  \
+   --install-extension ms-python.anaconda-extension-pack  \
+   --install-extension ms-kubernetes-tools.vscode-kubernetes-tools  \
+   --install-extension ms-azuretools.vscode-docker  \
+   --install-extension ms-dotnettools.vscode-dotnet-pack  \
+   --install-extension esbenp.prettier-vscode  \
+   --install-extension rust-lang.rust-analyzer  \
+   --install-extension eamodio.gitlens  \
+   --install-extension ms-vscode.vs-keybindings
 
 # Path to Coder IDE
 WORKDIR /home/${USERNAME}/code
