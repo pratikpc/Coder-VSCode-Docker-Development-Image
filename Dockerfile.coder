@@ -96,7 +96,15 @@ RUN code-server --install-extension ms-vscode.cpptools-extension-pack \
    --install-extension vscjava.vscode-java-pack  \
    --install-extension vscjava.vscode-gradle  \
    --install-extension redhat.vscode-quarkus  \
-   --install-extension ms-python.anaconda-extension-pack  \
+   # Python
+   --install-extension ms-python.python  \
+   --install-extension ms-toolsai.jupyter  \
+   --install-extension ms-toolsai.vscode-jupyter-powertoys  \
+   --install-extension ms-python.isort  \
+   --install-extension ms-python.pylint  \
+   --install-extension ms-python.black-formatter  \
+   --install-extension ms-python.mypy-type-checker  \
+   \
    --install-extension ms-kubernetes-tools.vscode-kubernetes-tools  \
    --install-extension ms-azuretools.vscode-docker  \
    --install-extension ms-dotnettools.vscode-dotnet-pack  \
