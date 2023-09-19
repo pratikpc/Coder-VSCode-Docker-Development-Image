@@ -92,6 +92,7 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --prefix=/home/${US
 # Install Extensions
 RUN code-server --install-extension ms-vscode.cpptools-extension-pack \
    --install-extension twxs.cmake \
+   --install-extension ms-vscode.makefile-tools  \
    --install-extension VisualStudioExptTeam.vscodeintellicode  \
    --install-extension vscjava.vscode-java-pack  \
    --install-extension vscjava.vscode-gradle  \
