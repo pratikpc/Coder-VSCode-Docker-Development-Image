@@ -94,6 +94,8 @@ RUN code-server --install-extension ms-vscode.cpptools-extension-pack \
    --install-extension twxs.cmake \
    --install-extension ms-vscode.makefile-tools  \
    --install-extension VisualStudioExptTeam.vscodeintellicode  \
+   --install-extension ms-vscode.powershell  \
+   # Java
    --install-extension vscjava.vscode-java-pack  \
    --install-extension vscjava.vscode-gradle  \
    --install-extension redhat.vscode-quarkus  \
