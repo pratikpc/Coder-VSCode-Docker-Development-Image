@@ -105,6 +105,7 @@ RUN code-server --install-extension ms-vscode.cpptools-extension-pack \
    --install-extension ms-python.pylint  \
    --install-extension ms-python.black-formatter  \
    --install-extension ms-python.mypy-type-checker  \
+   --install-extension charliermarsh.ruff \
    \
    --install-extension ms-kubernetes-tools.vscode-kubernetes-tools  \
    --install-extension ms-azuretools.vscode-docker  \
