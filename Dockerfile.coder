@@ -20,6 +20,7 @@ RUN dnf update --assumeyes && \
     nano \
     dos2unix \
     sudo \
+    bash-completion \
     git && \
   dnf clean all
 
