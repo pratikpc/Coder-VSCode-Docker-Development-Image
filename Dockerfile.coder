@@ -39,6 +39,14 @@ RUN /usr/local/deps/code-server/bin/code-server \
    --install-extension ms-vscode.vs-keybindings
 
 
+FROM fedora as rust-builder
+ENV RUSTUP_HOME=/usr/local/rustup \
+  CARGO_HOME=/usr/local/cargo
+COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=rust:slim /usr/local/rustup ${RUSTUP_HOME}
+COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=rust:slim /usr/local/cargo ${CARGO_HOME}
+ENV PATH=${CARGO_HOME}/bin:$PATH
+RUN rustup component add clippy rustfmt llvm-tools rust-analyzer
+
 
 FROM fedora
 
@@ -118,10 +126,9 @@ ENV PATH=/usr/local/deps/dotnet:$PATH
 # Add Rust
 ENV RUSTUP_HOME=/usr/local/rustup \
   CARGO_HOME=/usr/local/cargo
-COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=rust:slim /usr/local/rustup ${RUSTUP_HOME}
-COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=rust:slim /usr/local/cargo ${CARGO_HOME}
+COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=rust-builder /usr/local/rustup ${RUSTUP_HOME}
+COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=rust-builder /usr/local/cargo ${CARGO_HOME}
 ENV PATH=${CARGO_HOME}/bin:$PATH
-RUN rustup component add clippy rustfmt llvm-tools rust-analyzer
 
 # Add Code Server
 COPY --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=code-server-builder /usr/local/deps/code-server /usr/local/deps/code-server
