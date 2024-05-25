@@ -54,6 +54,12 @@ COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=mcr.microsoft.co
 RUN mv /usr/local/deps/powershell/*/* /usr/local/deps/powershell/
 
 
+# Add Ninja
+FROM alpine as ninja-builder
+RUN apk add curl && \
+  rm -rf /var/cache/apk/* && \
+  curl -fSSL https://github.com/ninja-build/ninja/releases/latest/download/ninja-linux.zip | unzip -d /usr/local/ -
+
 FROM fedora
 
 # C++ Based tools
@@ -64,7 +70,6 @@ RUN dnf update --assumeyes && \
     clang-analyzer \
     git-clang-format \
     cmake \
-    ninja-build \
     nasm \
     bash \
     ca-certificates \
@@ -138,6 +143,9 @@ COPY --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=code-server-builder /us
 # Add PowerShell
 COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=powershell-builder /usr/local/deps/powershell /usr/local/deps/powershell
 ENV PATH=/usr/local/deps/powershell:$PATH
+
+# Add Ninja
+COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=ninja-builder /usr/local/ninja /usr/local/bin/ninja
 
 # Path to Coder IDE
 WORKDIR /home/${USERNAME}/code
