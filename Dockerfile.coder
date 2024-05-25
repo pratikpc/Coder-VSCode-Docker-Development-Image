@@ -59,9 +59,8 @@ ENV PATH=/usr/local/deps/powershell:$PATH
 COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=node:slim /usr/local /usr/local/deps/node
 ENV PATH=/usr/local/deps/node/bin:$PATH
 
-# Add Conda
-COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=continuumio/miniconda3 /opt/conda /opt/conda
-ENV PATH="/opt/conda/bin:${PATH}"
+# Add Python
+COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=python:slim /usr/local /usr/local
 
 # Add Java
 ENV JAVA_HOME /opt/java/openjdk
