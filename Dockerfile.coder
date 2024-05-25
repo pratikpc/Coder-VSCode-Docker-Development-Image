@@ -1,3 +1,45 @@
+###
+# Coder
+###
+FROM fedora as code-server-builder
+ENV EXTENSIONS_GALLERY='{"serviceUrl":"https://marketplace.visualstudio.com/_apis/public/gallery","cacheUrl":"https://vscode.blob.core.windows.net/gallery/index","itemUrl":"https://marketplace.visualstudio.com/items","controlUrl":"","recommendationsUrl":""}'
+ENV PATH=${PATH}:/usr/local/deps/code-server/bin
+RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --prefix=/usr/local/deps/code-server --method=standalone && \
+  rm -rf ~/.cache
+# Install Extensions
+RUN /usr/local/deps/code-server/bin/code-server \
+   --extensions-dir /usr/local/deps/code-server/extensions \
+   --user-data-dir /usr/local/deps/code-server/data \
+   --install-extension ms-vscode.cpptools-extension-pack \
+   --install-extension twxs.cmake \
+   --install-extension ms-vscode.makefile-tools  \
+   --install-extension VisualStudioExptTeam.vscodeintellicode  \
+   --install-extension ms-vscode.powershell  \
+   # Java
+   --install-extension vscjava.vscode-java-pack  \
+   --install-extension vscjava.vscode-gradle  \
+   --install-extension redhat.vscode-quarkus  \
+   # Python
+   --install-extension ms-python.python  \
+   --install-extension ms-toolsai.jupyter  \
+   --install-extension ms-toolsai.vscode-jupyter-powertoys  \
+   --install-extension ms-python.isort  \
+   --install-extension ms-python.pylint  \
+   --install-extension ms-python.black-formatter  \
+   --install-extension ms-python.mypy-type-checker  \
+   --install-extension charliermarsh.ruff \
+   \
+   --install-extension ms-kubernetes-tools.vscode-kubernetes-tools  \
+   --install-extension ms-azuretools.vscode-docker  \
+   --install-extension ms-dotnettools.vscode-dotnet-pack  \
+   --install-extension esbenp.prettier-vscode  \
+   --install-extension rust-lang.rust-analyzer  \
+   --install-extension ms-vscode.hexeditor  \
+   --install-extension eamodio.gitlens  \
+   --install-extension ms-vscode.vs-keybindings
+
+
+
 FROM fedora
 
 # C++ Based tools
@@ -74,52 +116,19 @@ COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=mcr.microsoft.co
 ENV PATH=/usr/local/deps/dotnet:$PATH
 
 # Add Rust
-ENV RUSTUP_HOME=/usr/local/deps/rustup \
-  CARGO_HOME=/usr/local/deps/cargo
+ENV RUSTUP_HOME=/usr/local/rustup \
+  CARGO_HOME=/usr/local/cargo
 COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=rust:slim /usr/local/rustup ${RUSTUP_HOME}
 COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=rust:slim /usr/local/cargo ${CARGO_HOME}
 ENV PATH=${CARGO_HOME}/bin:$PATH
 RUN rustup component add clippy rustfmt llvm-tools rust-analyzer
 
-###
-# Coder
-###
-ENV EXTENSIONS_GALLERY='{"serviceUrl":"https://marketplace.visualstudio.com/_apis/public/gallery","cacheUrl":"https://vscode.blob.core.windows.net/gallery/index","itemUrl":"https://marketplace.visualstudio.com/items","controlUrl":"","recommendationsUrl":""}'
-ENV PATH=${PATH}:/home/${USERNAME}/code-server/bin
-RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --prefix=/home/${USERNAME}/code-server --method=standalone && \
-  rm -rf ~/.cache
-# Install Extensions
-RUN code-server --install-extension ms-vscode.cpptools-extension-pack \
-   --install-extension twxs.cmake \
-   --install-extension ms-vscode.makefile-tools  \
-   --install-extension VisualStudioExptTeam.vscodeintellicode  \
-   --install-extension ms-vscode.powershell  \
-   # Java
-   --install-extension vscjava.vscode-java-pack  \
-   --install-extension vscjava.vscode-gradle  \
-   --install-extension redhat.vscode-quarkus  \
-   # Python
-   --install-extension ms-python.python  \
-   --install-extension ms-toolsai.jupyter  \
-   --install-extension ms-toolsai.vscode-jupyter-powertoys  \
-   --install-extension ms-python.isort  \
-   --install-extension ms-python.pylint  \
-   --install-extension ms-python.black-formatter  \
-   --install-extension ms-python.mypy-type-checker  \
-   --install-extension charliermarsh.ruff \
-   \
-   --install-extension ms-kubernetes-tools.vscode-kubernetes-tools  \
-   --install-extension ms-azuretools.vscode-docker  \
-   --install-extension ms-dotnettools.vscode-dotnet-pack  \
-   --install-extension esbenp.prettier-vscode  \
-   --install-extension rust-lang.rust-analyzer  \
-   --install-extension ms-vscode.hexeditor  \
-   --install-extension eamodio.gitlens  \
-   --install-extension ms-vscode.vs-keybindings
+# Add Code Server
+COPY --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=code-server-builder /usr/local/deps/code-server /usr/local/deps/code-server
 
 # Path to Coder IDE
 WORKDIR /home/${USERNAME}/code
 
 EXPOSE 8080
 
-ENTRYPOINT ["code-server", "--bind-addr", "0.0.0.0:8080", "--disable-telemetry", "--disable-getting-started-override", "."]
+ENTRYPOINT ["/usr/local/deps/code-server/bin/code-server", "--bind-addr", "0.0.0.0:8080", "--disable-telemetry", "--disable-getting-started-override", "--extensions-dir", "/usr/local/deps/code-server/extensions", "--user-data-dir", "/usr/local/deps/code-server/data", "."]
