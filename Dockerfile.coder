@@ -48,6 +48,12 @@ ENV PATH=${CARGO_HOME}/bin:$PATH
 RUN rustup component add clippy rustfmt llvm-tools rust-analyzer
 
 
+# Add PowerShell
+FROM fedora as powershell-builder
+COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=mcr.microsoft.com/powershell /opt/microsoft/powershell /usr/local/deps/powershell
+RUN mv /usr/local/deps/powershell/*/* /usr/local/deps/powershell/
+
+
 FROM fedora
 
 # C++ Based tools
@@ -70,7 +76,8 @@ RUN dnf update --assumeyes && \
     dos2unix \
     sudo \
     bash-completion \
-    git && \
+    git \
+    icu && \
   dnf clean all
 
 # Make typing unicode characters in the terminal work.
@@ -98,11 +105,6 @@ WORKDIR /home/${USERNAME}
 # Add docker-compose
 # Compose V2 as docker plugin
 COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=docker:cli /usr/local/libexec/docker/cli-plugins/docker-compose /usr/local/libexec/docker/cli-plugins/docker-compose
-
-# Add PowerShell
-COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=mcr.microsoft.com/powershell /opt/microsoft/powershell /usr/local/deps/powershell
-RUN mv /usr/local/deps/powershell/*/* /usr/local/deps/powershell/
-ENV PATH=/usr/local/deps/powershell:$PATH
 
 # Add Node
 COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=node:slim /usr/local /usr/local/deps/node
@@ -132,6 +134,10 @@ ENV PATH=${CARGO_HOME}/bin:$PATH
 
 # Add Code Server
 COPY --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=code-server-builder /usr/local/deps/code-server /usr/local/deps/code-server
+
+# Add PowerShell
+COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=powershell-builder /usr/local/deps/powershell /usr/local/deps/powershell
+ENV PATH=/usr/local/deps/powershell:$PATH
 
 # Path to Coder IDE
 WORKDIR /home/${USERNAME}/code
