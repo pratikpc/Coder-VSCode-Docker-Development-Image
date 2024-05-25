@@ -145,3 +145,6 @@ WORKDIR /home/${USERNAME}/code
 EXPOSE 8080
 
 ENTRYPOINT ["/usr/local/deps/code-server/bin/code-server", "--bind-addr", "0.0.0.0:8080", "--disable-telemetry", "--disable-getting-started-override", "--extensions-dir", "/usr/local/deps/code-server/extensions", "--user-data-dir", "/usr/local/deps/code-server/data", "."]
+
+HEALTHCHECK CMD \
+  curl -f http://localhost:8080/healthz || exit 1
