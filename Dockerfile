@@ -138,6 +138,7 @@ COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=rust-builder /us
 ENV PATH=${CARGO_HOME}/bin:$PATH
 
 # Add Code Server
+ENV EXTENSIONS_GALLERY='{"serviceUrl":"https://marketplace.visualstudio.com/_apis/public/gallery","cacheUrl":"https://vscode.blob.core.windows.net/gallery/index","itemUrl":"https://marketplace.visualstudio.com/items","controlUrl":"","recommendationsUrl":""}'
 COPY --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=code-server-builder /usr/local/deps/code-server /usr/local/deps/code-server
 
 # Add PowerShell
