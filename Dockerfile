@@ -57,9 +57,7 @@ RUN mv /usr/local/deps/powershell/*/* /usr/local/deps/powershell/
 
 # Add Ninja
 FROM alpine as ninja-builder
-RUN apk add curl && \
-  rm -rf /var/cache/apk/* && \
-  curl -fSSL https://github.com/ninja-build/ninja/releases/latest/download/ninja-linux.zip | unzip -d /usr/local/ -
+RUN wget https://github.com/ninja-build/ninja/releases/latest/download/ninja-linux.zip -O - | unzip -d /usr/local/ -
 
 FROM fedora
 
