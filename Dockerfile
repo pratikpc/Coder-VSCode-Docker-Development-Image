@@ -1,6 +1,7 @@
 ###
 # Coder
 ###
+
 FROM fedora as code-server-builder
 ENV EXTENSIONS_GALLERY='{"serviceUrl":"https://marketplace.visualstudio.com/_apis/public/gallery","cacheUrl":"https://vscode.blob.core.windows.net/gallery/index","itemUrl":"https://marketplace.visualstudio.com/items","controlUrl":"","recommendationsUrl":""}'
 ENV PATH=${PATH}:/usr/local/deps/code-server/bin
@@ -8,35 +9,35 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --prefix=/usr/local
   rm -rf ~/.cache
 # Install Extensions
 RUN /usr/local/deps/code-server/bin/code-server \
-   --extensions-dir /usr/local/deps/code-server/extensions \
-   --user-data-dir /usr/local/deps/code-server/data \
-   --install-extension ms-vscode.cpptools-extension-pack \
-   --install-extension twxs.cmake \
-   --install-extension ms-vscode.makefile-tools  \
-   --install-extension VisualStudioExptTeam.vscodeintellicode  \
-   --install-extension ms-vscode.powershell  \
-   # Java
-   --install-extension vscjava.vscode-java-pack  \
-   --install-extension vscjava.vscode-gradle  \
-   --install-extension redhat.vscode-quarkus  \
-   # Python
-   --install-extension ms-python.python  \
-   --install-extension ms-toolsai.jupyter  \
-   --install-extension ms-toolsai.vscode-jupyter-powertoys  \
-   --install-extension ms-python.isort  \
-   --install-extension ms-python.pylint  \
-   --install-extension ms-python.black-formatter  \
-   --install-extension ms-python.mypy-type-checker  \
-   --install-extension charliermarsh.ruff \
-   \
-   --install-extension ms-kubernetes-tools.vscode-kubernetes-tools  \
-   --install-extension ms-azuretools.vscode-docker  \
-   --install-extension ms-dotnettools.vscode-dotnet-pack  \
-   --install-extension esbenp.prettier-vscode  \
-   --install-extension rust-lang.rust-analyzer  \
-   --install-extension ms-vscode.hexeditor  \
-   --install-extension eamodio.gitlens  \
-   --install-extension ms-vscode.vs-keybindings
+  --extensions-dir /usr/local/deps/code-server/extensions \
+  --user-data-dir /usr/local/deps/code-server/data \
+  --install-extension ms-vscode.cpptools-extension-pack \
+  --install-extension twxs.cmake \
+  --install-extension ms-vscode.makefile-tools  \
+  --install-extension VisualStudioExptTeam.vscodeintellicode  \
+  --install-extension ms-vscode.powershell  \
+  # Java
+  --install-extension vscjava.vscode-java-pack  \
+  --install-extension vscjava.vscode-gradle  \
+  --install-extension redhat.vscode-quarkus  \
+  # Python
+  --install-extension ms-python.python  \
+  --install-extension ms-toolsai.jupyter  \
+  --install-extension ms-toolsai.vscode-jupyter-powertoys  \
+  --install-extension ms-python.isort  \
+  --install-extension ms-python.pylint  \
+  --install-extension ms-python.black-formatter  \
+  --install-extension ms-python.mypy-type-checker  \
+  --install-extension charliermarsh.ruff \
+  \
+  --install-extension ms-kubernetes-tools.vscode-kubernetes-tools  \
+  --install-extension ms-azuretools.vscode-docker  \
+  --install-extension ms-dotnettools.vscode-dotnet-pack  \
+  --install-extension esbenp.prettier-vscode  \
+  --install-extension rust-lang.rust-analyzer  \
+  --install-extension ms-vscode.hexeditor  \
+  --install-extension eamodio.gitlens  \
+  --install-extension ms-vscode.vs-keybindings
 
 
 FROM fedora as rust-builder
@@ -65,29 +66,29 @@ FROM fedora
 # C++ Based tools
 RUN dnf update --assumeyes && \
   dnf install --assumeyes \
-    clang \
-    clang-tools-extra \
-    clang-analyzer \
-    git-clang-format \
-    cmake \
-    nasm \
-    bash \
-    ca-certificates \
-    curl \
-    wget \
-    vim \
-    tar \
-    nano \
-    dos2unix \
-    sudo \
-    bash-completion \
-    git \
-    icu && \
+  clang \
+  clang-tools-extra \
+  clang-analyzer \
+  git-clang-format \
+  cmake \
+  nasm \
+  bash \
+  ca-certificates \
+  curl \
+  wget \
+  vim \
+  tar \
+  nano \
+  dos2unix \
+  sudo \
+  bash-completion \
+  git \
+  icu && \
   dnf clean all
 
 # Make typing unicode characters in the terminal work.
 ENV LC_ALL=en_US.UTF-8 \
-    LANG=en_US.UTF-8
+  LANG=en_US.UTF-8
 
 # Create a user for development
 ARG USERNAME=coder
