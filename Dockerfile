@@ -33,6 +33,7 @@ RUN /usr/local/deps/code-server/bin/code-server \
   --install-extension ms-kubernetes-tools.vscode-kubernetes-tools  \
   --install-extension ms-azuretools.vscode-docker  \
   --install-extension ms-dotnettools.vscode-dotnet-pack  \
+  --install-extension ms-dotnettools.csdevkit \
   --install-extension esbenp.prettier-vscode  \
   --install-extension rust-lang.rust-analyzer  \
   --install-extension ms-vscode.hexeditor  \
