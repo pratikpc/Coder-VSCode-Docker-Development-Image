@@ -12,7 +12,7 @@ RUN /usr/local/deps/code-server/bin/code-server \
   --extensions-dir /usr/local/deps/code-server/extensions \
   --user-data-dir /usr/local/deps/code-server/data \
   --install-extension ms-vscode.cpptools-extension-pack \
-  --install-extension twxs.cmake \
+  --install-extension llvm-vs-code-extensions.vscode-clangd \
   --install-extension ms-vscode.makefile-tools  \
   --install-extension VisualStudioExptTeam.vscodeintellicode  \
   --install-extension ms-vscode.powershell  \
