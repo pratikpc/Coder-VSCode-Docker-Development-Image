@@ -18,7 +18,6 @@ RUN /usr/local/deps/code-server/bin/code-server \
   --install-extension ms-vscode.powershell  \
   # Java
   --install-extension vscjava.vscode-java-pack  \
-  --install-extension vscjava.vscode-gradle  \
   --install-extension redhat.vscode-quarkus  \
   # Python
   --install-extension ms-python.python  \
