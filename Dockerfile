@@ -72,6 +72,7 @@ RUN dnf update --assumeyes && \
   cmake \
   nasm \
   bash \
+  glibc-langpack-en \
   ca-certificates \
   curl \
   wget \
