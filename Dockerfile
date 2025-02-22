@@ -38,7 +38,11 @@ RUN /usr/local/deps/code-server/bin/code-server \
   --install-extension rust-lang.rust-analyzer  \
   --install-extension ms-vscode.hexeditor  \
   --install-extension eamodio.gitlens  \
-  --install-extension ms-vscode.vs-keybindings
+  --install-extension ms-vscode.vs-keybindings \ 
+  # Spell Checker
+  --install-extension streetsidesoftware.code-spell-checker	\
+  --install-extension streetsidesoftware.code-spell-checker-british-english	\
+  --install-extension streetsidesoftware.code-spell-checker-scientific-terms
 
 
 FROM fedora as rust-builder
