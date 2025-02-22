@@ -68,6 +68,10 @@ RUN dnf update --assumeyes && \
   clang \
   clang-tools-extra \
   clang-analyzer \
+  libcxx-devel \
+  libcxxabi-devel \
+  libcxx-static \
+  libcxxabi-static \
   git-clang-format \
   cmake \
   nasm \
