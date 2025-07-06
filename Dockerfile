@@ -92,6 +92,7 @@ RUN dnf update --assumeyes && \
   curl \
   wget \
   vim \
+  zip \
   tar \
   nano \
   dos2unix \
