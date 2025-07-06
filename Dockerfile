@@ -80,6 +80,10 @@ RUN dnf update --assumeyes && \
   libcxx-static \
   libcxxabi-static \
   git-clang-format \
+  gcc \
+  gcc-c++ \
+  perl \
+  doxygen \
   cmake \
   nasm \
   bash \
@@ -129,9 +133,6 @@ ENV PATH=/usr/local/deps/node/bin:$PATH
 
 # Add Python
 COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=python:slim /usr/local /usr/local
-
-# Add GCC
-COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=gcc:latest /usr/local /usr/local
 
 # Add Java
 ENV JAVA_HOME /opt/java/openjdk
