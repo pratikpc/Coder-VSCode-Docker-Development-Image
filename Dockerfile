@@ -162,6 +162,10 @@ ENV PATH=/usr/local/deps/powershell:$PATH
 # Add Ninja
 COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=ninja-builder /usr/local/ninja /usr/local/bin/ninja
 
+# Add UV
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+RUN uv tool install commitizen
+
 # Path to Coder IDE
 WORKDIR /home/${USERNAME}/code
 
