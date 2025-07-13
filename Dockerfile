@@ -136,8 +136,8 @@ ENV PATH=/usr/local/deps/node/bin:$PATH
 COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=python:slim /usr/local /usr/local
 
 # Add Java
-ENV JAVA_HOME /opt/java/openjdk
-ENV PATH ${JAVA_HOME}/bin:$PATH
+ENV JAVA_HOME=/opt/java/openjdk
+ENV PATH=${JAVA_HOME}/bin:$PATH
 COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=eclipse-temurin /opt/java/openjdk ${JAVA_HOME}
 
 # Add .NET
