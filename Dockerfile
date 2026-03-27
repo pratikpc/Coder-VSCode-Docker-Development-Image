@@ -2,7 +2,7 @@
 # Coder
 ###
 
-FROM fedora AS code-server-builder
+FROM quay.io/fedora/fedora AS code-server-builder
 ENV EXTENSIONS_GALLERY='{"serviceUrl":"https://marketplace.visualstudio.com/_apis/public/gallery","cacheUrl":"https://vscode.blob.core.windows.net/gallery/index","itemUrl":"https://marketplace.visualstudio.com/items","controlUrl":"","recommendationsUrl":""}'
 ENV PATH=${PATH}:/usr/local/deps/code-server/bin
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --prefix=/usr/local/deps/code-server --method=standalone && \
@@ -44,7 +44,7 @@ RUN /usr/local/deps/code-server/bin/code-server \
   --install-extension streetsidesoftware.code-spell-checker-scientific-terms
 
 
-FROM fedora AS rust-builder
+FROM quay.io/fedora/fedora AS rust-builder
 ENV RUSTUP_HOME=/usr/local/rustup \
   CARGO_HOME=/usr/local/cargo
 ARG USER_UID=1000
@@ -56,7 +56,7 @@ RUN rustup component add clippy rustfmt llvm-tools rust-analyzer
 
 
 # Add PowerShell
-FROM fedora AS powershell-builder
+FROM quay.io/fedora/fedora AS powershell-builder
 ARG USER_UID=1000
 ARG USER_GID=${USER_UID}
 COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=mcr.microsoft.com/powershell /opt/microsoft/powershell /usr/local/deps/powershell
@@ -67,7 +67,7 @@ RUN mv /usr/local/deps/powershell/*/* /usr/local/deps/powershell/
 FROM alpine AS ninja-builder
 RUN wget https://github.com/ninja-build/ninja/releases/latest/download/ninja-linux.zip -O - | unzip -d /usr/local/ -
 
-FROM fedora
+FROM quay.io/fedora/fedora
 
 # C++ Based tools
 RUN dnf update --assumeyes && \
