@@ -62,11 +62,6 @@ ARG USER_GID=${USER_UID}
 COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=mcr.microsoft.com/powershell /opt/microsoft/powershell /usr/local/deps/powershell
 RUN mv /usr/local/deps/powershell/*/* /usr/local/deps/powershell/
 
-
-# Add Ninja
-FROM alpine AS ninja-builder
-RUN wget https://github.com/ninja-build/ninja/releases/latest/download/ninja-linux.zip -O - | unzip -d /usr/local/ -
-
 FROM quay.io/fedora/fedora
 
 # C++ Based tools
@@ -84,7 +79,6 @@ RUN dnf update --assumeyes && \
   gcc-c++ \
   perl \
   doxygen \
-  cmake \
   nasm \
   bash \
   glibc-langpack-en \
@@ -101,6 +95,8 @@ RUN dnf update --assumeyes && \
   git \
   icu && \
   dnf clean all
+
+RUN unlink /usr/local/sbin
 
 # Make typing unicode characters in the terminal work.
 ENV LC_ALL=en_US.UTF-8 \
@@ -159,12 +155,11 @@ COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=code-server-buil
 COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=powershell-builder /usr/local/deps/powershell /usr/local/deps/powershell
 ENV PATH=/usr/local/deps/powershell:$PATH
 
-# Add Ninja
-COPY --link --chown=${USER_UID}:${USER_GID} --chmod=0777 --from=ninja-builder /usr/local/ninja /usr/local/bin/ninja
-
 # Add UV
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-RUN uv tool install commitizen
+RUN uv tool install commitizen && \
+    uv tool install cmake && \
+    uv tool install ninja
 
 # Path to Coder IDE
 WORKDIR /home/${USERNAME}/code
